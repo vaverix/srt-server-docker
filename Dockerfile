@@ -15,10 +15,6 @@ RUN apk add --no-cache \
   tcl \
   openssl-dev \
   zlib-dev
-RUN apk add tclsh \ 
-    pkg-config \
-    libssl-dev \
-    build-essential
 
 # Clone projects
 WORKDIR /source

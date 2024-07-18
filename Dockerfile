@@ -2,11 +2,12 @@
 FROM alpine:latest as build
 
 # Define version args
-ARG SRT_VERSION=v1.4.2
+ARG SRT_VERSION=v1.5.3
 ARG SLS_VERSION=V1.4.8
 
 # Install build dependencies
 RUN apk update
+RUN apk upgrade
 RUN apk add --no-cache \
   linux-headers \
   alpine-sdk \
@@ -14,6 +15,10 @@ RUN apk add --no-cache \
   tcl \
   openssl-dev \
   zlib-dev
+RUN apk add tclsh \ 
+    pkg-config \
+    libssl-dev \
+    build-essential
 
 # Clone projects
 WORKDIR /source

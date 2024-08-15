@@ -45,7 +45,7 @@ RUN apk update && \
 
 # Copy SRT libraries
 COPY --from=build /usr/local/bin/srt-* /usr/local/bin/
-COPY --from=build /usr/local/lib64/libsrt* /usr/local/lib64/
+COPY --from=build /usr/local/lib/libsrt* /usr/local/lib/
 
 # Copy SLS binary
 COPY --from=build /source/sls/bin/* /usr/local/bin/

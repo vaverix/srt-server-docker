@@ -28,6 +28,7 @@ RUN make install
 
 # Compile SLS
 WORKDIR /source/sls
+RUN echo "#include <ctime>"|cat - slscore/common.cpp > /tmp/out && mv /tmp/out slscore/common.cpp
 RUN make
 
 # Entry image

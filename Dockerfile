@@ -3,7 +3,7 @@ FROM alpine:latest as build
 
 # Define version args
 ARG SRT_VERSION=v1.5.3
-ARG SLS_VERSION=V1.4.8
+ARG SLS_VERSION=master
 
 # Install build dependencies
 RUN apk update
@@ -19,7 +19,7 @@ RUN apk add --no-cache \
 # Clone projects
 WORKDIR /source
 RUN git clone --branch ${SRT_VERSION} https://github.com/Haivision/srt.git srt
-RUN git clone --branch ${SLS_VERSION} https://github.com/Edward-Wu/srt-live-server.git sls
+RUN git clone --branch ${SLS_VERSION} https://github.com/irlserver/irl-srt-server.git sls
 
 # Compile SRT
 WORKDIR /source/srt
@@ -28,8 +28,9 @@ RUN make install
 
 # Compile SLS
 WORKDIR /source/sls
-RUN echo "#include <ctime>"|cat - slscore/common.cpp > /tmp/out && mv /tmp/out slscore/common.cpp
-RUN make
+RUN git submodule update --init
+RUN cmake . -DCMAKE_BUILD_TYPE=Release
+RUN make -j8
 
 # Entry image
 FROM alpine:latest
@@ -49,7 +50,7 @@ COPY --from=build /usr/local/lib/libsrt* /usr/local/lib/
 
 # Copy SLS binary
 COPY --from=build /source/sls/bin/* /usr/local/bin/
-COPY sls.conf /etc/sls/
+COPY src/sls.conf /etc/sls/
 
 # Use non-root user
 USER srt
@@ -57,5 +58,5 @@ WORKDIR /home/srt
 
 # Define entrypoint
 VOLUME /logs
-EXPOSE 1935/udp
-ENTRYPOINT ["sls", "-c", "/etc/sls/sls.conf"]
+EXPOSE 8080 8181 1935/udp 1936/udp
+ENTRYPOINT [ "srt_server", "-c", "/etc/sls/sls.conf"]

@@ -50,7 +50,7 @@ COPY --from=build /usr/local/lib/libsrt* /usr/local/lib/
 
 # Copy SLS binary
 COPY --from=build /source/sls/bin/* /usr/local/bin/
-COPY src/sls.conf /etc/sls/
+COPY sls.conf /etc/sls/
 
 # Use non-root user
 USER srt
